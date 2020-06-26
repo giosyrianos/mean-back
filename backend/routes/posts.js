@@ -34,6 +34,8 @@ const storage = multer.diskStorage({
 
 router.post(
   "",
+  // You do not execute "checkAuth",
+  // you add reference instead and EXPESS executes
   checkAuth,
   multer({ storage: storage }).single("image"),
   (req, res, next) => {
