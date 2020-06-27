@@ -40,3 +40,6 @@ Thumbs.db
 
 #Image Folder
 /backend/images
+
+#Request file
+request.http
