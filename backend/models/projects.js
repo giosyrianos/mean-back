@@ -3,13 +3,13 @@ const mongoose = require('mongoose');
 // Basic required project fields
 const reqProjectSchema = mongoose.Schema({
 	title: { type: String, required: true },
-	description: { type: String, required: true },
-	// imgPath: { type: String, required: true }
-	type: { type: String, required: true },
-	showDevBid: { type: Boolean, required: true },
-	category: { type: String, required: true},
-	subCategory: { type: String, required: true },
-	price: { type: Number, required: true},
+	description: { type: String},
+	imgPath: { type: String},
+	type: { type: String},
+	showDevBid: { type: Boolean},
+	category: { type: String},
+	subCategory: { type: String},
+	price: { type: Number},
 	ownerId: {type: mongoose.Schema.Types.ObjectId, required: true}
 });
 // Non required project fields
