@@ -8,7 +8,7 @@ exports.createUser = (req, res, next) => {
 		.then(hash => {
 			const user = new User({
 				email: req.body.email,
-				role: req.body.role,
+				userType: req.body.userType,
 				password: hash
 			});
 			user.save()
@@ -53,7 +53,7 @@ exports.userLogin = (req, res, next) => {
 				token: token,
 				expiresIn: 3600,
 				userId: fetchedUser._id,
-				role: fetchedUser.role
+				userType: fetchedUser.userType
 			})
 		})
 		.catch(error => {
