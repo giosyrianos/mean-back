@@ -23,7 +23,7 @@ router.post("/signup", (req, res, next) => {
 				})
 				.catch(err => {
 					res.status(500).json({
-						message: err
+						message: "Email already used " + String.fromCodePoint(0x1F641)
 					});
 				});
 		});
