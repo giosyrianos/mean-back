@@ -31,7 +31,7 @@ const storage = multer.diskStorage({
   }
 });
 
-router.post("/create",checkAuth, projectController.postProject)
+router.post("/create", projectController.postProject)
 // All projects
 router
   .route("/")
