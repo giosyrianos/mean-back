@@ -193,3 +193,44 @@ exports.addTask = async(req, res) => {
         })
 }
 
+exports.updatePost = async(req, res) => {
+    id = mongoose.Types.ObjectId(req.params.id)
+    Post.findById(id)
+    .then(post => {
+            const reqPost = new ReqPost({
+                title: req.body.title,
+                description: req.body.description,
+                type: req.body.type,
+                showDevBid: req.body.showDevBid,
+                category: req.body.category,
+                subCategory: req.body.subCategory,
+                price: req.body.price,
+                ownerId: req.body.ownerId
+            })
+            const nonReqPost = new NonReqPost({
+                _id:reqPost._id,
+                maxPrice: req.body.maxPrice,
+                duration: req.body.duration,
+                durationType: req.body.duration,
+                bodDuration: req.body.bodDuration,
+                recomendedTags: req.body.recomendedTags,
+            })
+            post.updateOne({
+                $set:{
+                    basicFields:reqPost,
+                    nonReqFields: nonReqPost
+                }
+            })
+            .then(res=> {
+                if(res.ok == '1'){
+                    res.status(200).json({
+                        message: "post updated!"
+                    })
+                }else{
+                    res.status(401).json({
+                        message: "Server erro!"
+                    })
+                }
+            })
+    })
+}
