@@ -15,7 +15,7 @@ var subUserSchema = mongoose.Schema({
 	surname: {type: String},
 	gender: {type: String},
 	dateOfBirth: {type: Date},
-	// imgPath: { type: String, required: true }
+	imgPath: { type: String, required: true }
 })
 
 // Client user schema
