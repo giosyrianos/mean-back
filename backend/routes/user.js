@@ -25,10 +25,10 @@ router
 	.route('/developers')
 	.get(userController.getDevelopers)
 
-// Get developer 
+// Get developer
 router
 	.route('/developers/:id')
-	.get(userController.getDeveloperById)	
+	.get(userController.getDeveloperById)
 // Get Post of Single Dev
 router
 	.route('/:devId/posts')

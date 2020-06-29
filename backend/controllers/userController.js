@@ -81,7 +81,7 @@ exports.signup = (req, res, next) => {
                                 data: data
                             })
                         })
-                        
+
                         .catch(error => {
                             return res.status(401).json({
                                 message: 'Internal server error!',
@@ -356,6 +356,6 @@ exports.getDeveloperPosts = (req, res, next) => {
                 })
             }
         })
-    
+
 }
 
