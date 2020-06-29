@@ -6,6 +6,12 @@ const { Post } = require("../models/posts");
 
 
 exports.signup = (req, res, next) => {
+    multer({ storage: storage }).single("image")
+    let imgPath = req.body.imgPath
+    if (req.file) {
+        const url = req.protocol + "://" + req.get("host")
+        imgPath = url + "/images/" + req.file.filename
+    }
     bcrypt.hash(req.body.password, 10)
     .then(hash => {
         const user = new User({
@@ -19,7 +25,8 @@ exports.signup = (req, res, next) => {
             name: req.body.firstname,
             surname: req.body.lastname,
             gender: req.body.gender,
-            dateOfBirth: req.body.dob
+            dateOfBirth: req.body.dob,
+            imgPath: imgPath
         });
         user.save(function (err, user) {
             if (err){

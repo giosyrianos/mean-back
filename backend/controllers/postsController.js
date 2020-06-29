@@ -30,6 +30,12 @@ getClientIdByUsername = (username) => {
 }
 
 exports.postPost = async(req, res) => {
+    multer({ storage: storage }).single("image")
+    let imgPath = req.body.imgPath
+    if (req.file) {
+        const url = req.protocol + "://" + req.get("host")
+        imgPath = url + "/images/" + req.file.filename
+    }
     const reqPost = new ReqPost({
         title: req.body.title,
         description: req.body.description,
@@ -38,6 +44,7 @@ exports.postPost = async(req, res) => {
         category: req.body.category,
         subCategory: req.body.subCategory,
         price: req.body.price,
+        imgPath: imgPath,
         ownerId: req.body.ownerId
     })
     const nonReqPost = new NonReqPost({
