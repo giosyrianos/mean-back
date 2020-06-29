@@ -15,22 +15,6 @@ createUser = (User, res) => {
     })
 }
 
-createClient = (Client, res) => {
-    Client.save()
-    .then( data => {
-        res.status(200).json({
-            message: "Client saved successfuly",
-            data: data
-        })
-    })
-    .catch(error => {
-        res.status(401).json({
-            message: 'Internal server error!',
-            error: error.message
-        });
-    })
-}
-
 createDeveloper = (Developer,res) => {
     Developer.save()
             .then( data => {
@@ -75,20 +59,55 @@ exports.signup = (req, res, next) => {
                     const client = new Client({
                         _id: user._id,
                         userFields: user,
-                        description: "gamiete h js",
+                        description: "h js einai boli gali",
                         subUserFields: subuser
                     })
-                    createClient(client, res)
+                    client.save()
+                        .then( data => {
+                            res.status(200).json({
+                                message: "Client saved successfuly",
+                                data: data
+                            })
+                        })
+                        .catch(error => {
+                            res.status(401).json({
+                                message: 'Internal server error!',
+                                error: error.message
+                            });
+                        })
                 }
                 if (req.body.userType == "Developer") {
+                    if (req.body.skillTags){
+                        skillTags =req.body.skillTags.split(',')
+                    }else{
+                        skillTags = []
+                    }
+                    if (req.body.portfolio){
+                        portfolio = req.body.porfolio.split(',')
+                    }else{
+                        portfolio = []
+                    }
                     const developer = new Developer({
                         _id: user._id,
                         userFields: user,
                         subUserFields: subuser,
-                        skillTags: req.body.skillTags.split(','),
-                        portfolio: req.body.portfolio.split(',')
+                        skillTags: skillTags,
+                        portfolio: portfolio
                     })
-                    createDeveloper(developer, res)
+                    developer.save()
+                        .then( data => {
+                            res.status(200).json({
+                                message: "Developer saved successfuly",
+                                data: data
+                            })
+                        })
+                        
+                        .catch(error => {
+                            return res.status(401).json({
+                                message: 'Internal server error!',
+                                error: error.message
+                            });
+                        })
                 }
             }
         })
