@@ -16,8 +16,8 @@ exports.signup = (req, res, next) => {
         });
         const subuser = new SubUser({
             _id: user._id,
-            name: req.body.name,
-            surname: req.body.surname,
+            name: req.body.firstname,
+            surname: req.body.lastname,
             gender: req.body.gender,
             dateOfBirth: req.body.dob
         });
@@ -50,8 +50,8 @@ exports.signup = (req, res, next) => {
                         })
                 }
                 if (req.body.userType == "Developer") {
-                    if (req.body.skillTags){
-                        skillTags =req.body.skillTags.split(',')
+                    if (req.body.skills){
+                        skillTags =req.body.skills.split(',')
                     }else{
                         skillTags = []
                     }
@@ -74,7 +74,7 @@ exports.signup = (req, res, next) => {
                                 data: data
                             })
                         })
-                        
+
                         .catch(error => {
                             return res.status(401).json({
                                 message: 'Internal server error!',
@@ -155,7 +155,7 @@ exports.getUser = async (req, res, next) => {
 exports.updateUser = async(req, res, next) => {
     User.findById(req.params.id)
     if ( userType == 'Client'){
-        Client.findById(req.params.id)
+        Client.findByIdAndUpdate(req.params.id)
             .then(client => {
                 if(client){
                     res.status(200).json(client);
@@ -274,12 +274,21 @@ exports.getDeveloperById = (req, res, next) =>{
 
 exports.getDeveloperPosts = (req, res, next) => {
     var id = mongoose.Types.ObjectId(req.params.devId)
-    Post.find({devId: id})
+    var devposts = []
+    Post.find()
         .then(posts => {
-            if(posts.length > 0){
+            for (post in posts){
+                bids = post.bids
+                for (bid in bids){
+                    if(bid.devId == id){
+                        devposts.push(bid)
+                    }
+                }
+            }
+            if(devposts.length > 0){
                 res.status(200).json({
                     message: "Posts found",
-                    data: posts
+                    data: devposts
                 })
             }else{
                 res.status(401).json({
@@ -287,6 +296,6 @@ exports.getDeveloperPosts = (req, res, next) => {
                 })
             }
         })
-    
+
 }
 
