@@ -153,35 +153,88 @@ exports.getUser = async (req, res, next) => {
 }
 
 exports.updateUser = async(req, res, next) => {
-    User.findById(req.params.id)
-    if ( userType == 'Client'){
-        Client.findByIdAndUpdate(req.params.id)
-            .then(client => {
-                if(client){
-                    res.status(200).json(client);
-                } else {
-                    res.status(404).json({ message: "Client not found!" });
+    var id = mongoose.Types.ObjectId(req.params.id)
+    bcrypt.hash(req.body.password, 10)
+    .then(hash => {
+        const basicuser = new User({
+            email : req.body.email,
+            username : req.body.username,
+            userType : req.body.userType,
+            password : hash,
+        });
+        const subuser = new SubUser({
+            _id: id,
+            name: req.body.firstname,
+            surname: req.body.lastname,
+            gender: req.body.gender,
+            dateOfBirth: req.body.dob
+        });
+        User.findById(req.params.id)
+        .then(user => {
+            user.updateOne(
+                {
+                    $set: {
+                        email: basicuser.email,
+                        username: basicuser.username,
+                        userType: basicuser.userType,
+                        password: hash
+                    }
                 }
-            })
-    }
-    if ( userType == 'Developer'){
-        Developer.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true,
-                runValidators: true
-            })
-            .then(developer => {
-                console.log(developer)
-                if(developer){
-                    res.status(200).json(developer);
-                } else {
-                    res.status(404).json({ message: "Server error!" });
+            )
+            .then(resp => {
+                if ( user.userType == 'Client'){
+                    Client.findById(user._id)
+                    .then(client => {
+                        client.updateOne(
+                            {
+                                $set:{
+                                    userFields: basicuser,
+                                    subUserFields: subuser,
+                                    description: req.body.description
+                                }
+                            }
+                        )
+                        .then(data => {
+                            if(data){
+                                res.status(200).json({
+                                    message: "User changed success"
+                                })
+                            }else{
+                                res.status(401).json({
+                                    message: "Internal Server error"
+                                })
+                            }
+                        })
+                    })
                 }
-            })
-    }
-}
+                if ( user.userType == 'Developer'){
+                    Developer.findById(user._id)
+                    .then(dev => {
+                        dev.updateOne(
+                            {
+                                $set:{
+                                    userFields: basicuser,
+                                    subUserFields: subuser
+                                }
+                            }
+                        )
+                        .then(data => {
+                            if(data){
+                                res.status(200).json({
+                                    message: "User changed success"
+                                })
+                            }else{
+                                res.status(401).json({
+                                    message: "Internal Server error"
+                                })
+                            }
+                        })
+                    })
+                }
+            }
+            )
+        })
+})}
 
 exports.deleteUser = (req, res, next) => {
     let userType = req.body.userType
@@ -288,7 +341,7 @@ exports.getDeveloperPosts = (req, res, next) => {
             if(devposts.length > 0){
                 res.status(200).json({
                     message: "Posts found",
-                    data: posts
+                    data: devposts
                 })
             }else{
                 res.status(401).json({
