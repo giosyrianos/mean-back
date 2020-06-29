@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const checkAuth = require("../middleware/check-auth")
-const projectController = require("../controllers/projectsController")
+const postController = require("../controllers/postsController")
 
 const router = express.Router();
 
@@ -31,34 +31,34 @@ const storage = multer.diskStorage({
   }
 });
 
-router.post("/create", projectController.postProject)
-// All projects
+router.post("/create", postController.postPost)
+// All posts
 router
   .route("/")
-  .get(projectController.getAllProjects)
+  .get(postController.getAllPosts)
 
-// Projects per client id
+// Posts per client id
 router
   .route("/client/:clientId")
-  .get(projectController.getAllProjectsByClientId)
+  .get(postController.getAllPostsByClientId)
 
 router
-  .route("/:clientId/:projectId")
-  .get(projectController.getProjectByClintIdAndProjectId)
+  .route("/:clientId/:postId")
+  .get(postController.getPostByClintIdAndPostId)
 
 router
   .route("/:id")
-  .get(projectController.getProjectById)
-  .delete(projectController.deleteProject)
-  // .put(projectController.updateProject)
+  .get(postController.getPostById)
+  .delete(postController.deletePost)
+  // .put(postController.updatePost)
 
 router
   .route('/bid')
-  .post(projectController.postBid)
+  .post(postController.postBid)
 
 router
   .route('/tasks')
-  .post(projectController.addTask)  
+  .post(postController.addTask)  
 
 // router.put(
 //   "/:id",

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
-// Basic required project fields
-const reqProjectSchema = mongoose.Schema({
+// Basic required Post fields
+const reqPostSchema = mongoose.Schema({
 	title: { type: String, required: true },
 	description: { type: String},
 	imgPath: { type: String},
@@ -12,8 +12,8 @@ const reqProjectSchema = mongoose.Schema({
 	price: { type: Number},
 	ownerId: {type: mongoose.Schema.Types.ObjectId, required: true}
 });
-// Non required project fields
-const nonReqProjectSchema = mongoose.Schema({
+// Non required Post fields
+const nonReqPostSchema = mongoose.Schema({
 	maxPrice: {type:  Number },
 	duration: {type: Number },
 	durationType: {type: String, default: "N/A"},
@@ -33,12 +33,12 @@ const taskSchema = mongoose.Schema({
 	description: {type:String , required: true},
 	completed: { type: Boolean , default: false}
 })
-// Project schema
-const projectSchema = mongoose.Schema({
+// Post schema
+const PostSchema = mongoose.Schema({
 	// Required fields
-	basicFields: reqProjectSchema,
+	basicFields: reqPostSchema,
 	// Non-required fields
-	nonReqFields: nonReqProjectSchema,
+	nonReqFields: nonReqPostSchema,
 	// Dev bids
 	bids : [bidSchema],
 	// Task list
@@ -47,16 +47,16 @@ const projectSchema = mongoose.Schema({
 	devId: mongoose.Types.ObjectId
 })
 
-const Project = mongoose.model('Project', projectSchema);
-const ReqProject = mongoose.model('ReqProject', reqProjectSchema);
-const NonReqProject = mongoose.model('NonReqProject', nonReqProjectSchema)
+const Post = mongoose.model('Post', PostSchema);
+const ReqPost = mongoose.model('ReqPost', reqPostSchema);
+const NonReqPost = mongoose.model('NonReqPost', nonReqPostSchema)
 const Bid = mongoose.model('Bid', bidSchema)
 const Task = mongoose.model('Task', taskSchema)
 
 module.exports = {
-	Project: Project,
-	ReqProject: ReqProject,
-	NonReqProject, NonReqProject,
+	Post: Post,
+	ReqPost: ReqPost,
+	NonReqPost, NonReqPost,
 	Bid: Bid,
 	Task: Task
 }

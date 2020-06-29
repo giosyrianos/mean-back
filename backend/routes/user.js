@@ -29,7 +29,7 @@ router
 	.route('/developers/:id')
 	.get(userController.getDeveloperById)	
 router
-	.route('/:devId/projects')
-	.get(userController.getDeveloperProjects)
+	.route('/:devId/posts')
+	.get(userController.getDeveloperPosts)
 
 module.exports = router;

@@ -1,14 +1,14 @@
-const {Project, ReqProject, NonReqProject, Bid, Task} = require("../models/projects")
+const {Post, ReqPost, NonReqPost, Bid, Task} = require("../models/posts")
 const checkAuth = require("../middleware/check-auth")
 const {Client} = require("../models/user")
 const mongoose = require('mongoose');
 
-createProject =( Project, res) => {
-    Project.save()
+createPost =( Post, res) => {
+    Post.save()
     .then( proj => {
         if(proj){
             res.status(200).json({
-                message: "Project created coble",
+                message: "Post created coble",
                 data:proj
             })
         }else{
@@ -29,9 +29,8 @@ getClientIdByUsername = (username) => {
     })
 }
 
-exports.postProject = async(req, res) => {
-    let clientId = req.body.clientId
-    const reqProj = new ReqProject({
+exports.postPost = async(req, res) => {
+    const reqPost = new ReqPost({
         title: req.body.title,
         description: req.body.description,
         type: req.body.type,
@@ -39,100 +38,100 @@ exports.postProject = async(req, res) => {
         category: req.body.category,
         subCategory: req.body.subCategory,
         price: req.body.price,
-        ownerId: clientId
+        ownerId: req.body.ownerId
     })
-    const nonReqProj = new NonReqProject({
-        _id:reqProj._id,
+    const nonReqPost = new NonReqPost({
+        _id:reqPost._id,
         maxPrice: req.body.maxPrice,
         duration: req.body.duration,
         durationType: req.body.duration,
         bodDuration: req.body.bodDuration,
         recomendedTags: req.body.recomendedTags,
     })
-    const project = new Project({
-        _id:reqProj._id,
-        basicFields: reqProj,
-        nonReqFields: nonReqProj
+    const post = new Post({
+        _id:reqPost._id,
+        basicFields: reqPost,
+        nonReqFields: nonReqPost
     })
-    createProject(project, res)
+    createPost(post, res)
 }
 
-exports.getAllProjects = async(req, res) => {
+exports.getAllPosts = async(req, res) => {
     const pageSize = +req.query.pagesize
     const currentPage = +req.query.page
-    const projects = Project.find();
-    let totalProjects;
+    const posts = Post.find();
+    let totalPosts;
 
      if (pageSize && currentPage) {
-            projects
+            posts
                 .skip(pageSize * (currentPage - 1))
                 .limit(pageSize)
         }
-        projects
+        posts
             .then(projs => {
-                totalProjects = projs
-                return Project.countDocuments()
+                totalPosts = projs
+                return Post.countDocuments()
             })
             .then(count => {
                 res.status(200).json({
-                    message: "Projects fetched successfully!",
-                    projects: totalProjects,
+                    message: "Posts fetched successfully!",
+                    posts: totalPosts,
                     total: count
             })
         })
 }
-exports.getAllProjectsByClientId = async(req, res)=> {
+exports.getAllPostsByClientId = async(req, res)=> {
     id = mongoose.Types.ObjectId(req.params.clientId)
-    Project.find({'basicFields.clientId': id})
-    .then(projects => {
-        console.log(projects)
-        if(projects.length > 0){
-            res.status(200).json(projects)
+    Post.find({'basicFields.clientId': id})
+    .then(posts => {
+        console.log(posts)
+        if(posts.length > 0){
+            res.status(200).json(posts)
         }
         else{
             res.status(400).json({
-                message: "No projects found"
+                message: "No posts found"
             })
         }
     })
 }
 
-exports.getProjectById = async(req, res) => {
+exports.getPostById = async(req, res) => {
     id = mongoose.Types.ObjectId(req.params.id)
-    Project.findById(id)
-    .then(project => {
-        if(project){
-            res.json(project)
+    Post.findById(id)
+    .then(post => {
+        if(post){
+            res.json(post)
         }else{
-            res.json("Project not found")
+            res.json("Post not found")
         }
     })
 }
 
-exports.deleteProject = async(req, res) => {
+exports.deletePost = async(req, res) => {
     id = mongoose.Types.ObjectId(req.params.id)
-    Project.findOneAndDelete({_id:id})
+    Post.findOneAndDelete({_id:id})
     .then(data => {
         res.json({
-            message: "proj deleted",
+            message: "Post deleted",
             data: data
         })
     })
 }
 
-exports.getProjectByClintIdAndProjectId = async(req, res) =>{
+exports.getPostByClintIdAndPostId = async(req, res) =>{
     var clientId = mongoose.Types.ObjectId(req.params.clientId)
-    var projectId = mongoose.Types.ObjectId(req.params.projectId)
-    Project.find({'basicFields._id': projectId,'basicFields.clientId': clientId })
-        .then(project => {
-            if(project){
+    var postId = mongoose.Types.ObjectId(req.params.postId)
+    Post.find({'basicFields._id': postId,'basicFields.clientId': clientId })
+        .then(post => {
+            if(post){
                 res.status(200).json({
-                    message: "project found",
-                    data: project
+                    message: "post found",
+                    data: post
                 })
             }else{
                 res.status(401).json({
-                    message: "project not found"
+                    message: "post not found"
                 })
             }
         })
@@ -140,12 +139,12 @@ exports.getProjectByClintIdAndProjectId = async(req, res) =>{
 
 exports.postBid = async(req, res) => {
     var devId = mongoose.Types.ObjectId(req.body.devId)
-    var projId = mongoose.Types.ObjectId(req.body.projId)
+    var projId = mongoose.Types.ObjectId(req.body.postId)
     const bid = new Bid({
         devId: devId,
         price: req.body.price
     })
-    Project.findById(projId)
+    Post.findById(projId)
         .then(project => {
             project.updateOne(
                 {$push : {
@@ -168,12 +167,12 @@ exports.postBid = async(req, res) => {
 
 exports.addTask = async(req, res) => {
     var devId = mongoose.Types.ObjectId(req.body.devId)
-    var projId = mongoose.Types.ObjectId(req.body.projId)
+    var projId = mongoose.Types.ObjectId(req.body.postId)
     
     const task = new Task({
         description: req.body.description,
     })
-    Project.findById(projId)
+    Post.findById(projId)
         .then(project => {
             project.updateOne({
                 $push : {

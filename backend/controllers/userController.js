@@ -2,7 +2,7 @@ const {User, SubUser, Client, Developer} = require("../models//user")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
-const { Project } = require("../models/projects");
+const { Post } = require("../models/posts");
 
 
 createUser = (User, res) => {
@@ -282,18 +282,18 @@ exports.getDeveloperById = (req, res, next) =>{
         })
 }
 
-exports.getDeveloperProjects = (req, res, next) => {
+exports.getDeveloperPosts = (req, res, next) => {
     var id = mongoose.Types.ObjectId(req.params.devId)
-    Project.find({devId: id})
-        .then(projects => {
-            if(projects.length > 0){
+    Post.find({devId: id})
+        .then(posts => {
+            if(posts.length > 0){
                 res.status(200).json({
-                    message: "Projects found",
-                    data: projects
+                    message: "Posts found",
+                    data: posts
                 })
             }else{
                 res.status(401).json({
-                    message: "projects not found"
+                    message: "posts not found"
                 })
             }
         })
