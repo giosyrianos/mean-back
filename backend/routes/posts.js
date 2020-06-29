@@ -60,27 +60,4 @@ router
   .route('/tasks')
   .post(postController.addTask)  
 
-// router.put(
-//   "/:id",
-//   checkAuth,
-//   multer({ storage: storage }).single("image"),
-//   (req, res, next) => {
-//     let imgPath = req.body.imgPath;
-//     if (req.file) {
-//       const url = req.protocol + "://" + req.get("host");
-//       imgPath = url + "/images/" + req.file.filename
-//     }
-//     const post = new Post({
-//       _id: req.body.id,
-//       title: req.body.title,
-//       content: req.body.content,
-//       imgPath: imgPath
-//     });
-//     console.log(post);
-//     Post.updateOne({ _id: req.params.id }, post).then(result => {
-//       res.status(200).json({ message: "Update successful!" });
-//     });
-//   }
-// );
-
 module.exports = router;
