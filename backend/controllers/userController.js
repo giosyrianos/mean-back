@@ -5,33 +5,6 @@ const mongoose = require("mongoose");
 const { Post } = require("../models/posts");
 
 
-createUser = (User, res) => {
-    User.save()
-    .catch(error => {
-        return res.status(401).json({
-            message: 'Internal server error!',
-            error: error.message
-        });
-    })
-}
-
-createDeveloper = (Developer,res) => {
-    Developer.save()
-            .then( data => {
-                res.status(200).json({
-                    message: "Developer saved successfuly",
-                    data: data
-                })
-            })
-            
-            .catch(error => {
-                return res.status(401).json({
-                    message: 'Internal server error!',
-                    error: error.message
-                });
-            })
-}
-
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
     .then(hash => {
@@ -152,33 +125,31 @@ exports.login = (req, res, next) => {
 		})
 }
 
-ShowUser = (User, res) => {
-    console.log(User)
-
-}
-
 exports.getUser = async (req, res, next) => {
-    let userType = req.body.userType
-    if ( userType == 'Client'){
-        Client.findById(req.params.id)
-            .then(client => {
-                if(client){
-                    res.status(200).json(client);
-                } else {
-                    res.status(404).json({ message: "Client not found!" });
-                }
-            })
-    }
-    if ( userType == 'Developer'){
-        Developer.findById(req.params.id)
-            .then(developer => {
-                if(developer){
-                    res.status(200).json(developer);
-                } else {
-                    res.status(404).json({ message: "Client not found!" });
-                }
-            })
-    }
+    let _id = mongoose.Types.ObjectId(req.params.id)
+    User.findById(_id)
+    .then(user => {
+        if ( user.userType == 'Client'){
+            Client.findById(_id)
+                .then(client => {
+                    if(client){
+                        res.status(200).json(client);
+                    } else {
+                        res.status(404).json({ message: "Client not found!" });
+                    }
+                })
+        }
+        if ( user.userType == 'Developer'){
+            Developer.findById(_id)
+                .then(developer => {
+                    if(developer){
+                        res.status(200).json(developer);
+                    } else {
+                        res.status(404).json({ message: "Developer not found!" });
+                    }
+                })
+        }
+})
 }
 
 exports.updateUser = async(req, res, next) => {
