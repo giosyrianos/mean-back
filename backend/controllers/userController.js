@@ -18,13 +18,13 @@ createUser = (User, res) => {
 createClient = (Client, res) => {
     Client.save()
     .then( data => {
-        return res.status(200).json({
+        res.status(200).json({
             message: "Client saved successfuly",
             data: data
         })
     })
     .catch(error => {
-        return res.status(401).json({
+        res.status(401).json({
             message: 'Internal server error!',
             error: error.message
         });
@@ -121,7 +121,8 @@ exports.login = (req, res, next) => {
 			res.status(200).json({
                 token: token,
                 userId: fetchedUser._id,
-                userType: fetchedUser.userType
+                userType: fetchedUser.userType,
+                expiresIn: 3600
 			})
 		})
 		.catch(error => {
