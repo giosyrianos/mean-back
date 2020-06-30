@@ -37,7 +37,7 @@ exports.postPost = async(req, res) => {
     // data = JSON.parse(req.body.postData)
     console.log(req.body.title)
     const url = req.protocol + "://" + req.get("host")
-    imgPath = url + "/post-images/" + req.file.filename
+    imgPath = url + "/images/" + req.file.filename
 
     const reqPost = new ReqPost({
         title: req.body.title,
