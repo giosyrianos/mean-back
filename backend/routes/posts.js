@@ -31,11 +31,11 @@ const storage = multer.diskStorage({
   }
 });
 
-router.post("/create", postController.postPost)
 // All posts
 router
   .route("/")
   .get(postController.getAllPosts)
+  .post(multer({storage: storage}).single("image"),postController.postPost)
 
 // Posts per client id
 router

@@ -2,6 +2,9 @@ const {Post, ReqPost, NonReqPost, Bid, Task} = require("../models/posts")
 const checkAuth = require("../middleware/check-auth")
 const {Client} = require("../models/user")
 const mongoose = require('mongoose');
+const multer = require("multer");
+
+
 
 createPost =( Post, res) => {
     Post.save()
@@ -30,12 +33,8 @@ getClientIdByUsername = (username) => {
 }
 
 exports.postPost = async(req, res) => {
-    multer({ storage: storage }).single("image")
-    let imgPath = req.body.imgPath
-    if (req.file) {
-        const url = req.protocol + "://" + req.get("host")
-        imgPath = url + "/images/" + req.file.filename
-    }
+    console.log(req.body)
+    const url = req.protocol + "://" + req.get("host")
     const reqPost = new ReqPost({
         title: req.body.title,
         description: req.body.description,
@@ -44,7 +43,7 @@ exports.postPost = async(req, res) => {
         category: req.body.category,
         subCategory: req.body.subCategory,
         price: req.body.price,
-        imgPath: imgPath,
+        imgPath: url + "/images/" + req.file.name,
         ownerId: req.body.ownerId
     })
     const nonReqPost = new NonReqPost({
