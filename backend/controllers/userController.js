@@ -158,21 +158,29 @@ exports.getUser = async (req, res, next) => {
 }
 
 exports.updateUser = async(req, res, next) => {
+    userr = JSON.parse(req.body.newUser)
+
+    let imagePath = userr.imgPath
+    if (req.file) {
+        const url = req.protocol + "://" + req.get("host");
+        imagePath = url + "/images/" + req.file.filename
+    }
+
     var id = mongoose.Types.ObjectId(req.params.id)
-    bcrypt.hash(req.body.password, 10)
+    bcrypt.hash(userr.password, 10)
     .then(hash => {
         const basicuser = new User({
-            email : req.body.email,
-            username : req.body.username,
-            userType : req.body.userType,
+            email : userr.email,
+            username : userr.username,
+            userType : userr.userType,
             password : hash,
         });
         const subuser = new SubUser({
             _id: id,
-            name: req.body.firstname,
-            surname: req.body.lastname,
-            gender: req.body.gender,
-            dateOfBirth: req.body.dob
+            name: userr.firstname,
+            surname: userr.lastname,
+            gender: userr.gender,
+            dateOfBirth: userr.dob
         });
         User.findById(req.params.id)
         .then(user => {

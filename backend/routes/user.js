@@ -17,7 +17,7 @@ router.post('/login', userController.login);
 router
 	.route('/:id')
 	.get(userController.getUser)
-	.put(userController.updateUser)
+	.put(extractFile, userController.updateUser)
 	.delete(userController.deleteUser);
 router
 	.route('/')
