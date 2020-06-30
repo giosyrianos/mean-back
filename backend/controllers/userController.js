@@ -6,90 +6,90 @@ const { Post } = require("../models/posts");
 
 
 exports.signup = (req, res, next) => {
-    console.log(req.body.image)
+    userr = JSON.parse(req.body.newUser)
     const url = req.protocol + "://" + req.get("host")
-    imgPath = url + "/images/" + req.body.image.name
+    imgPath = url + "/images/" + req.file.filename
 
-    // bcrypt.hash(req.body.password, 10)
-    // .then(hash => {
-    //     const user = new User({
-    //         email : req.body.email,
-    //         username : req.body.username,
-    //         userType : req.body.userType,
-    //         password : hash,
-    //     });
-    //     const subuser = new SubUser({
-    //         _id: user._id,
-    //         name: req.body.firstname,
-    //         surname: req.body.lastname,
-    //         gender: req.body.gender,
-    //         dateOfBirth: req.body.dob,
-    //         imgPath: imgPath
-    //     });
-    //     user.save(function (err, user) {
-    //         if (err){
-    //             return res.status(401).json({
-    //                 message: "Internal server error",
-    //                 error: err.message
-    //             })
-    //         }else{
-    //             if (req.body.userType == "Client"){
-    //                 const client = new Client({
-    //                     _id: user._id,
-    //                     userFields: user,
-    //                     description: "h js einai boli gali",
-    //                     subUserFields: subuser
-    //                 })
-    //                 client.save()
-    //                     .then( data => {
-    //                         res.status(200).json({
-    //                             message: "Client saved successfuly",
-    //                             data: data
-    //                         })
-    //                     })
-    //                     .catch(error => {
-    //                         res.status(401).json({
-    //                             message: 'Internal server error!',
-    //                             error: error.message
-    //                         });
-    //                     })
-    //             }
-    //             if (req.body.userType == "Developer") {
-    //                 if (req.body.skills){
-    //                     skillTags =req.body.skills.split(',')
-    //                 }else{
-    //                     skillTags = []
-    //                 }
-    //                 if (req.body.portfolio){
-    //                     portfolio = req.body.porfolio.split(',')
-    //                 }else{
-    //                     portfolio = []
-    //                 }
-    //                 const developer = new Developer({
-    //                     _id: user._id,
-    //                     userFields: user,
-    //                     subUserFields: subuser,
-    //                     skillTags: skillTags,
-    //                     portfolio: portfolio
-    //                 })
-    //                 developer.save()
-    //                     .then( data => {
-    //                         res.status(200).json({
-    //                             message: "Developer saved successfuly",
-    //                             data: data
-    //                         })
-    //                     })
+    bcrypt.hash(userr.password, 10)
+    .then(hash => {
+        const user = new User({
+            email : userr.email,
+            username : userr.username,
+            userType : userr.userType,
+            password : hash,
+        });
+        const subuser = new SubUser({
+            _id: user._id,
+            name: userr.firstname,
+            surname: userr.lastname,
+            gender: userr.gender,
+            dateOfBirth: userr.dob,
+            imgPath: imgPath
+        });
+        user.save(function (err, user) {
+            if (err){
+                return res.status(401).json({
+                    message: "Internal server error",
+                    error: err.message
+                })
+            }else{
+                if (user.userType == "Client"){
+                    const client = new Client({
+                        _id: user._id,
+                        userFields: user,
+                        description: "h js einai boli gali",
+                        subUserFields: subuser
+                    })
+                    client.save()
+                        .then( data => {
+                            res.status(200).json({
+                                message: "Client saved successfuly",
+                                data: data
+                            })
+                        })
+                        .catch(error => {
+                            res.status(401).json({
+                                message: 'Internal server error!',
+                                error: error.message
+                            });
+                        })
+                }
+                if (user.userType == "Developer") {
+                    if (req.body.skills){
+                        skillTags =req.body.skills.split(',')
+                    }else{
+                        skillTags = []
+                    }
+                    if (req.body.portfolio){
+                        portfolio = req.body.porfolio.split(',')
+                    }else{
+                        portfolio = []
+                    }
+                    const developer = new Developer({
+                        _id: user._id,
+                        userFields: user,
+                        subUserFields: subuser,
+                        skillTags: skillTags,
+                        portfolio: portfolio
+                    })
+                    developer.save()
+                        .then( data => {
+                            res.status(200).json({
+                                message: "Developer saved successfuly",
+                                data: data
+                            })
+                        })
 
-    //                     .catch(error => {
-    //                         return res.status(401).json({
-    //                             message: 'Internal server error!',
-    //                             error: error.message
-    //                         });
-    //                     })
-    //             }
-    //         }
-    //     })
-    // })
+                        .catch(error => {
+                            return res.status(401).json({
+                                message: 'Internal server error!',
+                                error: error.message
+                            });
+                        })
+                }
+            }
+        })
+    })
 }
 
 exports.login = (req, res, next) => {
