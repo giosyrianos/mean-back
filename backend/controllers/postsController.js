@@ -33,17 +33,21 @@ getClientIdByUsername = (username) => {
 }
 
 exports.postPost = async(req, res) => {
-    console.log(req.body)
+
+    // data = JSON.parse(req.body.postData)
+    console.log(req.body.title)
     const url = req.protocol + "://" + req.get("host")
+    imgPath = url + "/post-images/" + req.file.filename
+
     const reqPost = new ReqPost({
         title: req.body.title,
-        description: req.body.description,
+        description: req.body.content,
         type: req.body.type,
         showDevBid: req.body.showDevBid,
         category: req.body.category,
         subCategory: req.body.subCategory,
         price: req.body.price,
-        imgPath: url + "/images/" + req.file.name,
+        imgPath: imgPath,
         ownerId: req.body.ownerId
     })
     const nonReqPost = new NonReqPost({
