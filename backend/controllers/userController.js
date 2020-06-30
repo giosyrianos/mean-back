@@ -6,7 +6,7 @@ const { Post } = require("../models/posts");
 
 
 exports.signup = (req, res, next) => {
-    console.log(req.body.image.name)
+    console.log(req.body.image)
     const url = req.protocol + "://" + req.get("host")
     imgPath = url + "/images/" + req.body.image.name
 
