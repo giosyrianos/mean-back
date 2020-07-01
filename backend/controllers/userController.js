@@ -159,14 +159,15 @@ exports.getUser = async (req, res, next) => {
 
 exports.updateUser = async(req, res, next) => {
     userr = JSON.parse(req.body.newUser)
-
-    let imagePath = userr.imgPath
+    console.log(userr)
+    
     if (req.file) {
-        const url = req.protocol + "://" + req.get("host");
+        const url = req.protocol + "://" + req.get("host")
         imagePath = url + "/images/" + req.file.filename
+    }else{
+        imagePath = userr.imgPath
     }
-
-    var id = mongoose.Types.ObjectId(req.params.id)
+    let id = mongoose.Types.ObjectId(req.params.id)
     bcrypt.hash(userr.password, 10)
     .then(hash => {
         const basicuser = new User({
@@ -176,13 +177,13 @@ exports.updateUser = async(req, res, next) => {
             password : hash,
         });
         const subuser = new SubUser({
-            _id: id,
-            name: userr.firstname,
-            surname: userr.lastname,
+            name: userr.name,
+            surname: userr.surname,
             gender: userr.gender,
-            dateOfBirth: userr.dob
+            dateOfBirth: userr.dob,
+            imgPath: imagePath
         });
-        User.findById(req.params.id)
+        User.findOne({_id: id})
         .then(user => {
             user.updateOne(
                 {
@@ -203,7 +204,7 @@ exports.updateUser = async(req, res, next) => {
                                 $set:{
                                     userFields: basicuser,
                                     subUserFields: subuser,
-                                    description: req.body.description
+                                    description: userr.description
                                 }
                             }
                         )
@@ -347,7 +348,7 @@ exports.getDeveloperPosts = (req, res, next) => {
                 for (j in bids){
                     console.log("bid" ,bids[j])
                     if(bids[j].devId == req.params.devId){
-                        devposts.push(bids[j])
+                        devposts.push(posts[i])
                     }
                 }
             }
