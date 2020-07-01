@@ -24,7 +24,7 @@ router
   .route("/:id")
   .get(postController.getPostById)
   .delete(postController.deletePost)
-  // .put(postController.updatePost)
+  .put(postController.updatePost)
 
 router
   .route('/bid')

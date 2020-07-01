@@ -209,16 +209,20 @@ exports.addTask = async(req, res) => {
 }
 
 exports.updatePost = async(req, res) => {
+    console.log(req.body)
     id = mongoose.Types.ObjectId(req.params.id)
+    const url = req.protocol + "://" + req.get("host")
+    imgPath = url + "/images/" + req.file.filename
     Post.findById(id)
     .then(post => {
             const reqPost = new ReqPost({
                 title: req.body.title,
-                description: req.body.description,
+                description: req.body.content,
                 type: req.body.type,
                 showDevBid: req.body.showDevBid,
                 category: req.body.category,
                 subCategory: req.body.subCategory,
+                imgPath: imgPath,
                 price: req.body.price,
                 ownerId: req.body.ownerId
             })
@@ -230,6 +234,7 @@ exports.updatePost = async(req, res) => {
                 bodDuration: req.body.bodDuration,
                 recomendedTags: req.body.recomendedTags,
             })
+            console.log(reqPost)
             post.updateOne({
                 $set:{
                     basicFields:reqPost,
