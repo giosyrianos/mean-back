@@ -357,8 +357,8 @@ exports.getDeveloperPosts = (req, res, next) => {
                     data: devposts
                 })
             }else{
-                res.status(401).json({
-                    message: "posts not found"
+                res.json({
+                    data: []
                 })
             }
         })

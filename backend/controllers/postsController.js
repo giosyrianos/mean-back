@@ -106,11 +106,6 @@ exports.getAllPostsByClientId = async(req, res)=> {
         if(posts.length > 0){
             res.status(200).json(posts)
         }
-        else{
-            res.status(400).json({
-                message: "No posts found"
-            })
-        }
     })
 }
 
