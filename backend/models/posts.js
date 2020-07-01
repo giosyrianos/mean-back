@@ -26,7 +26,8 @@ const nonReqPostSchema = mongoose.Schema({
 
 const bidSchema = mongoose.Schema({
 	devId: {type:mongoose.Types.ObjectId, required: true},
-	price: {type: Number, required: true}
+	price: {type: Number, required: true},
+	username: {type: String, required:true}
 })
 
 const taskSchema = mongoose.Schema({

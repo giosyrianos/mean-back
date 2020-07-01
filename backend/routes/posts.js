@@ -24,11 +24,19 @@ router
   .route("/:id")
   .get(postController.getPostById)
   .delete(postController.deletePost)
-  .put(postController.updatePost)
+  // .put(postController.updatePost)
 
 router
   .route('/bid')
   .post(postController.postBid)
+
+router
+  .route('/accept')
+  .put(postController.acceptBid)
+
+router
+  .route('/decline')
+  .put(postController.declineBid)
 
 router
   .route('/tasks')

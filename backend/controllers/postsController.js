@@ -1,4 +1,5 @@
 const {Post, ReqPost, NonReqPost, Bid, Task} = require("../models/posts")
+const {User} = require("../models/user")
 const checkAuth = require("../middleware/check-auth")
 const {Client} = require("../models/user")
 const mongoose = require('mongoose');
@@ -32,10 +33,17 @@ getClientIdByUsername = (username) => {
     })
 }
 
+getUsernameByID = (id) => {
+    User.findOne({_id: id})
+    .then(
+        user => { return user.username}
+    )
+}
+
 exports.postPost = async(req, res) => {
 
     // data = JSON.parse(req.body.postData)
-    console.log(req.body.title)
+    console.log(req.body)
     const url = req.protocol + "://" + req.get("host")
     imgPath = url + "/images/" + req.file.filename
 
@@ -69,7 +77,7 @@ exports.postPost = async(req, res) => {
 exports.getAllPosts = async(req, res) => {
     const pageSize = +req.query.pagesize
     const currentPage = +req.query.page
-    const posts = Post.find();
+    const posts = Post.find({devId: null});
     let totalPosts;
 
      if (pageSize && currentPage) {
@@ -152,8 +160,10 @@ exports.postBid = async(req, res) => {
     var projId = mongoose.Types.ObjectId(req.body.postId)
     const bid = new Bid({
         devId: devId,
+        projId: projId,
         price: req.body.price
     })
+    console.log(bid)
     Post.findById(projId)
         .then(project => {
             project.updateOne(
@@ -243,4 +253,37 @@ exports.updatePost = async(req, res) => {
                 }
             })
     })
+}
+
+exports.acceptBid = async(req, res) => {
+    console.log(req.body)
+    const postId = mongoose.Types.ObjectId(req.body.postId)
+    const bidId = mongoose.Types.ObjectId(req.body.bidId)
+    const devId = mongoose.Types.ObjectId(req.body.devId)
+    Post.findOneAndUpdate({_id: postId},
+        {
+            $set: {
+                devId:devId
+            }
+        })
+    .then(res =>{
+        console.log(res)
+    })
+}
+
+exports.declineBid = async(req, res) => {
+    const postId = mongoose.Types.ObjectId(req.body.postId)
+    const bidId = mongoose.Types.ObjectId(req.body.bidId)
+    const devId = mongoose.Types.ObjectId(req.body.devId)
+        Post.findOneAndUpdate({_id: postId},
+            {
+                $pull: {
+                    bids:{
+                        _id: bidId
+                    }
+                }
+            })
+        .then(res =>{
+            console.log(res)
+        })
 }
