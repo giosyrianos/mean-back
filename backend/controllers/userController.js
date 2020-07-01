@@ -131,7 +131,6 @@ exports.login = (req, res, next) => {
 }
 
 exports.getUser = async (req, res, next) => {
-    console.log(req.params.id)
     let _id = mongoose.Types.ObjectId(req.params.id)
     User.findById(_id)
     .then(user => {
@@ -340,15 +339,15 @@ exports.getDeveloperById = (req, res, next) =>{
 }
 
 exports.getDeveloperPosts = (req, res, next) => {
-    var id = mongoose.Types.ObjectId(req.params.devId)
     var devposts = []
     Post.find()
         .then(posts => {
-            for (post in posts){
-                bids = post.bids
-                for (bid in bids){
-                    if(bid.devId == id){
-                        devposts.push(bid)
+            for (i in posts){
+                bids = posts[i].bids
+                for (j in bids){
+                    console.log("bid" ,bids[j])
+                    if(bids[j].devId == req.params.devId){
+                        devposts.push(bids[j])
                     }
                 }
             }

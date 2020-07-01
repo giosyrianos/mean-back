@@ -33,7 +33,7 @@ router
 	.get(userController.getDeveloperById)
 // Get Post of Single Dev
 router
-	.route('/:devId/posts')
+	.route('/posts/:devId')
 	.get(userController.getDeveloperPosts)
 
 module.exports = router;
