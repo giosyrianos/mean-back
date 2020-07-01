@@ -131,6 +131,7 @@ exports.login = (req, res, next) => {
 }
 
 exports.getUser = async (req, res, next) => {
+    console.log(req.params.id)
     let _id = mongoose.Types.ObjectId(req.params.id)
     User.findById(_id)
     .then(user => {

@@ -92,7 +92,7 @@ exports.getAllPosts = async(req, res) => {
 }
 exports.getAllPostsByClientId = async(req, res)=> {
     id = mongoose.Types.ObjectId(req.params.clientId)
-    Post.find({'basicFields.clientId': id})
+    Post.find({'basicFields.ownerId': id})
     .then(posts => {
         console.log(posts)
         if(posts.length > 0){
