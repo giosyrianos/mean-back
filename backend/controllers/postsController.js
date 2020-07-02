@@ -161,6 +161,7 @@ exports.postBid = async(req, res) => {
         price: req.body.price,
         username: username
     })
+    console.log(bid)
     Post.findById(projId)
         .then(project => {
             project.updateOne(
@@ -169,19 +170,12 @@ exports.postBid = async(req, res) => {
                     bids: bid
                 }}
             )
-            .then(resp =>
-                {
-                    res.status(200).json({
-                        message: "bid added"
+            res.json({
+                        message: "bid added",
+                        post: project
                     })
-                })
         })
-        .catch(error => {
-            res.status(500).json({
-                messgae: "Internal server error",
-                error: error.message
-            })
-        })
+        
 }
 
 exports.addTask = async(req, res) => {
@@ -263,7 +257,6 @@ exports.updatePost = async(req, res) => {
 exports.acceptBid = async(req, res) => {
     console.log(req.body)
     const postId = mongoose.Types.ObjectId(req.body.postId)
-    const bidId = mongoose.Types.ObjectId(req.body.bidId)
     const devId = mongoose.Types.ObjectId(req.body.devId)
     Post.findOneAndUpdate({_id: postId},
         {
@@ -271,15 +264,17 @@ exports.acceptBid = async(req, res) => {
                 devId:devId
             }
         })
-    .then(res =>{
-        console.log(res)
+    .then(resp =>{
+        res.json({
+            message: "Bid accepted"
+        })
     })
 }
 
 exports.declineBid = async(req, res) => {
+    console.log("edw eskasa")
     const postId = mongoose.Types.ObjectId(req.body.postId)
     const bidId = mongoose.Types.ObjectId(req.body.bidId)
-    const devId = mongoose.Types.ObjectId(req.body.devId)
         Post.findOneAndUpdate({_id: postId},
             {
                 $pull: {
@@ -288,7 +283,9 @@ exports.declineBid = async(req, res) => {
                     }
                 }
             })
-        .then(res =>{
-            console.log(res)
+        .then(resp =>{
+            res.json({
+                message: "Bid declined!"
+            })
         })
 }

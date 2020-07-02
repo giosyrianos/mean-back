@@ -31,11 +31,11 @@ router
   .post(postController.postBid)
 
 router
-  .route('/accept')
+  .route('/bid/accept')
   .put(postController.acceptBid)
 
 router
-  .route('/decline')
+  .route('/bid/decline')
   .put(postController.declineBid)
 
 router
