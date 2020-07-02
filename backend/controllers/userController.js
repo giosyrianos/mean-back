@@ -10,6 +10,7 @@ exports.signup = (req, res, next) => {
     const url = req.protocol + "://" + req.get("host")
     imgPath = url + "/images/" + req.file.filename
 
+    console.log(userr)
     bcrypt.hash(userr.password, 10)
     .then(hash => {
         const user = new User({
@@ -55,13 +56,14 @@ exports.signup = (req, res, next) => {
                         })
                 }
                 if (user.userType == "Developer") {
-                    if (req.body.skills){
-                        skillTags =req.body.skills.split(',')
-                    }else{
-                        skillTags = []
+                    skillTags = []
+                    if (userr.selectedSkills){
+                        for(i in userr.selectedSkills){
+                            skillTags.push(userr.selectedSkills[i])
+                        }
                     }
-                    if (req.body.portfolio){
-                        portfolio = req.body.porfolio.split(',')
+                    if (userr.portfolio){
+                        portfolio = userr.porfolio.split(',')
                     }else{
                         portfolio = []
                     }
