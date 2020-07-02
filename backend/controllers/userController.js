@@ -371,6 +371,14 @@ exports.commentDeveloper= async(req, res) => {
     var postId = mongoose.Types.ObjectId(req.body.postId)
     var devId = mongoose.Types.ObjectId(req.body.devId)
     var clientId = mongoose.Types.ObjectId(req.body.postId)
+
+    var rating = req.body.rating
+    if (rating > 5 || rating < 1 ){
+        res.status(401).json({
+            message: "rating must be 1-5"
+        })
+    }
+
     var username = await(User.findById(clientId).username)
     var comment = {
         postId: postId,
