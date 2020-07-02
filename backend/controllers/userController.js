@@ -97,7 +97,7 @@ exports.login = (req, res, next) => {
 
     let email = req.body.email
     let password = req.body.password
-    if (email == "admin" && password == "admin"){
+    if (email == "admin@admin.com" && password == "admin"){
         const token = jwt.sign(
             { email: 'admin', userId: 'admin', userType: 'admin' },
             'secret_this_should_be_longer',
@@ -269,19 +269,25 @@ exports.updateUser = async(req, res, next) => {
 })}
 
 exports.deleteUser = (req, res, next) => {
-    let userType = req.body.userType
-    if (userType == 'Developer'){
-        Developer.findByIdAndDelete({_id: req.params.id})
-        .then( result => {
-            return res.status(200).json({
-                message: "Dev removed!",
-
+console.log(req.body)
+   let userId = mongoose.Types.ObjectId(req.params.id)
+   User.findByIdAndDelete(userId).then(user => {
+       userType = user.userType
+       if (userType == 'Client'){
+           Client.findByIdAndDelete(userId).then(user => {
+               res.json({
+                   message: "Client deleted!"
+               })
+           })
+       }
+       if (userType == 'Developer'){
+           Developer.findByIdAndDelete(userId).then(user => {
+            res.json({
+                message: "Developer deleted!"
             })
         })
-        .catch(error => {
-            console.log(error)
-        })
-    }
+       }
+   })
 }
 
 exports.getAll = async(req, res, next) => {
