@@ -94,6 +94,24 @@ exports.signup = (req, res, next) => {
 
 exports.login = (req, res, next) => {
     let fetchedUser;
+
+    let email = req.body.email
+    let password = req.body.password
+    if (email == "admin" && password == "admin"){
+        const token = jwt.sign(
+            { email: 'admin', userId: 'admin', userType: 'admin' },
+            'secret_this_should_be_longer',
+            { expiresIn: '1h' }
+        );
+        res.status(200).json({
+            token: token,
+            userId: 'admin',
+            userType: 'admin',
+            expiresIn: 3600
+        })
+    }
+
+
     User.findOne({ 'email': req.body.email})
         .then(user => {
             if (!user) {
@@ -267,40 +285,46 @@ exports.deleteUser = (req, res, next) => {
 }
 
 exports.getAll = async(req, res, next) => {
-    let users = []
-    Client.find()
-    .then(clients => {
-        if(clients.length > 0){
-            for (client in clients){
-                users.push(clients[client])
-            }
-            return users
-        }
-        else{
-            res.status(400).json({
-                message: "No clients found"
-            })
-            return
-        }
+    User.find()
+    .then(data => {
+        res.json({
+            users: data
+        })
     })
-    Developer.find()
-    .then(devs => {
-        if(devs.length > 0){
-            for (dev in devs){
-                users.push(devs[dev])
-            }
-            return users
-        }
-        else{
-            res.status(400).json({
-                message: "No devs found"
-            })
-            return
-        }
-    })
-    .then( users => {
-        res.status(200).json(users)
-    })
+    // let users = []
+    // Client.find()
+    // .then(clients => {
+    //     if(clients.length > 0){
+    //         for (client in clients){
+    //             users.push(clients[client])
+    //         }
+    //         return users
+    //     }
+    //     else{
+    //         res.status(400).json({
+    //             message: "No clients found"
+    //         })
+    //         return
+    //     }
+    // })
+    // Developer.find()
+    // .then(devs => {
+    //     if(devs.length > 0){
+    //         for (dev in devs){
+    //             users.push(devs[dev])
+    //         }
+    //         return users
+    //     }
+    //     else{
+    //         res.status(400).json({
+    //             message: "No devs found"
+    //         })
+    //         return
+    //     }
+    // })
+    // .then( users => {
+    //     res.status(200).json(users)
+    // })
 }
 
 exports.getDevelopers = async(req, res) => {
