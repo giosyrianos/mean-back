@@ -29,7 +29,7 @@ exports.signup = (req, res, next) => {
         user.save(function (err, user) {
             if (err){
                 return res.status(401).json({
-                    message: "Internal server error",
+                    message: "Email already exists!",
                     error: err.message
                 })
             }else{
@@ -49,7 +49,7 @@ exports.signup = (req, res, next) => {
                         })
                         .catch(error => {
                             res.status(401).json({
-                                message: 'Internal server error!',
+                                message: 'Email already exists!',
                                 error: error.message
                             });
                         })
@@ -82,7 +82,7 @@ exports.signup = (req, res, next) => {
 
                         .catch(error => {
                             return res.status(401).json({
-                                message: 'Internal server error!',
+                                message: 'Email already exists!',
                                 error: error.message
                             });
                         })
