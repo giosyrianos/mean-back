@@ -26,7 +26,9 @@ router
 router
 	.route('/developers')
 	.get(userController.getDevelopers)
-
+router
+	.route('/devs/comments/:id')
+	.get(userController.getDevComments)
 // Get developer
 router
 	.route('/developers/:id')
@@ -35,5 +37,9 @@ router
 router
 	.route('/posts/:devId')
 	.get(userController.getDeveloperPosts)
+
+router
+	.route('/comment')
+	.post(userController.commentDeveloper)
 
 module.exports = router;

@@ -46,7 +46,11 @@ const PostSchema = mongoose.Schema({
 	// Task list
 	tasks:[taskSchema],
 	// Dev ID
-	devId: {type: mongoose.Types.ObjectId, default: null}
+	devId: {type: mongoose.Types.ObjectId, default: null},
+	// Completed
+	completed: {type: Boolean, default: false},
+	// Commented
+	commented: {type: Boolean, default: false}
 })
 
 const Post = mongoose.model('Post', PostSchema);

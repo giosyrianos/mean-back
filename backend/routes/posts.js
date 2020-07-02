@@ -42,6 +42,10 @@ router
   .route('/tasks')
   .post(postController.addTask)  
 
+  router
+  .route('/set/complete')
+  .put(postController.completePost)  
+
 router
   .route('/tasks/complete')
   .put(postController.completeTask)

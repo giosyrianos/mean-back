@@ -315,3 +315,18 @@ exports.declineBid = async(req, res) => {
             })
         })
 }
+
+exports.completePost = async(req, res) => {
+    var postId = mongoose.Types.ObjectId(req.body.postId)
+    // console.log(req.body)
+    Post.findOneAndUpdate({_id: postId},
+        {
+            $set: {
+                completed: true
+            }
+        }).then(resp => {
+            res.json({
+                message: "Post completed"
+            })
+        })
+}

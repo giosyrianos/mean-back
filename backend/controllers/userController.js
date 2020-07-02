@@ -367,3 +367,47 @@ exports.getDeveloperPosts = (req, res, next) => {
 
 }
 
+exports.commentDeveloper= async(req, res) => {
+    var postId = mongoose.Types.ObjectId(req.body.postId)
+    var devId = mongoose.Types.ObjectId(req.body.devId)
+    var clientId = mongoose.Types.ObjectId(req.body.postId)
+    var username = await(User.findById(clientId).username)
+    var comment = {
+        postId: postId,
+        clientId: clientId,
+        comment: req.body.comment,
+        rating: req.body.rating,
+        username: username
+    }
+    Developer.findById(devId)
+    .then(dev => {
+        dev.updateOne({
+            $push: {
+                comments: comment
+            }
+        })
+        .then(re => {
+            Post.findOneAndUpdate({_id: postId},
+                {
+                    $set: {
+                        commented: true
+                    }
+                })
+                .then(resp => {
+                    res.json({
+                        message: "Comment completed"
+                    })
+                }
+                )
+        })
+    })
+}
+
+exports.getDevComments = async(req, res) => {
+    let id = mongoose.Types.ObjectId(req.params.id)
+    Developer.findById(id).then(dev=> {
+        res.json({
+            comments: dev.comments
+        })
+    })
+}

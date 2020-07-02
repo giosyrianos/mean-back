@@ -44,6 +44,13 @@ var developerSchema = mongoose.Schema({
 	// Contains links to projects
 	portfolio: [{
 		type:String
+	}],
+	comments: [{
+		postId: {type: mongoose.Schema.Types.ObjectId},
+		rating: {type: Number},
+		comment: {type: String},
+		clientId: {type: mongoose.Types.ObjectId},
+		username: String
 	}]
 })
 
