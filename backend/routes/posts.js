@@ -42,4 +42,8 @@ router
   .route('/tasks')
   .post(postController.addTask)  
 
+router
+  .route('/tasks/complete')
+  .put(postController.completeTask)
+
 module.exports = router;

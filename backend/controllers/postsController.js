@@ -155,13 +155,14 @@ exports.getPostByClintIdAndPostId = async(req, res) =>{
 exports.postBid = async(req, res) => {
     var devId = mongoose.Types.ObjectId(req.body.devId)
     var projId = mongoose.Types.ObjectId(req.body.postId)
+    console.log("Edw")
     var username = await (User.findById(devId).then(user => { return user.username}))
     const bid = new Bid({
         devId: devId,
         price: req.body.price,
         username: username
     })
-    console.log(bid)
+    console.log("Edddww")
     Post.findById(projId)
         .then(project => {
             project.updateOne(
@@ -170,10 +171,12 @@ exports.postBid = async(req, res) => {
                     bids: bid
                 }}
             )
-            res.json({
-                        message: "bid added",
-                        post: project
-                    })
+            .then(resp => {
+                res.json({
+                    message: "bid added",
+                    post: project
+                })
+            })
         })
         
 }
@@ -184,6 +187,7 @@ exports.addTask = async(req, res) => {
     
     const task = new Task({
         description: req.body.description,
+        name: req.body.name
     })
     Post.findById(projId)
         .then(project => {
@@ -193,17 +197,39 @@ exports.addTask = async(req, res) => {
                 }
             })
             .then(data => {
-                if(data){
-                    res.status(200).json({
-                        message: "task added"
-                    })
-                }else{
-                    res.status(401).json({
-                        message: "Internal Server error"
-                    })
-                }
+                res.status(200).json({
+                    message: "task added"
+                })
             })
         })
+}
+
+exports.completeTask = async(req, res) => {
+    var taskId = mongoose.Types.ObjectId(req.body.taskId)
+    var projId = mongoose.Types.ObjectId(req.body.postId)
+    console.log("edw", req.body)
+    Post.updateOne(
+        { _id : projId, "tasks._id": taskId }, 
+        { "$set": { "tasks.$.completed": true }}, 
+        )
+        .then(resp => {
+            res.json({
+                message: "Task completed"
+            })
+        })
+    // Post.findById(projId)
+    // .then(project => {
+    //    for(j in project.tasks){
+    //        if (project.tasks[j]._id === taskId)
+    //        {
+    //            project.tasks[j].updateOne({
+    //                $set: project.tasks[j] {
+    //                    completed: true
+    //                }
+    //            })
+    //        }
+    //    }
+    // })
 }
 
 exports.updatePost = async(req, res) => {
