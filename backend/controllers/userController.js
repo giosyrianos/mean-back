@@ -349,6 +349,7 @@ exports.getDeveloperPosts = (req, res, next) => {
                     console.log("bid" ,bids[j])
                     if(bids[j].devId == req.params.devId){
                         devposts.push(posts[i])
+                        break;
                     }
                 }
             }

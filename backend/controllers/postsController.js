@@ -4,6 +4,8 @@ const checkAuth = require("../middleware/check-auth")
 const {Client} = require("../models/user")
 const mongoose = require('mongoose');
 const multer = require("multer");
+const extractFile = require("../middleware/file")
+
 
 
 
@@ -166,16 +168,14 @@ exports.postBid = async(req, res) => {
                     bids: bid
                 }}
             )
-            .then(data => {
-                if(data){
-                    res.status(200).json({
-                        message: "bid added"
-                    })
-                }else{
-                    res.status(401).json({
-                        message: "Internal Server error"
-                    })
-                }
+            res.status(200).json({
+                message: "bid added"
+            })
+        })
+        .catch(error => {
+            res.status(500).json({
+                messgae: "Internal server error",
+                error: error.message
             })
         })
 }
@@ -209,10 +209,17 @@ exports.addTask = async(req, res) => {
 }
 
 exports.updatePost = async(req, res) => {
-    console.log(req.body)
+
+    if (req.file) {
+        const url = req.protocol + "://" + req.get("host")
+        imgPath = url + "/images/" + req.file.filename
+    }else{
+        imagePath = req.body.imgPath
+    }
+
     id = mongoose.Types.ObjectId(req.params.id)
-    const url = req.protocol + "://" + req.get("host")
-    imgPath = url + "/images/" + req.file.filename
+    // const url = req.protocol + "://" + req.get("host")
+    // imgPath = url + "/images/" + req.file.filename
     Post.findById(id)
     .then(post => {
             const reqPost = new ReqPost({
@@ -224,7 +231,7 @@ exports.updatePost = async(req, res) => {
                 subCategory: req.body.subCategory,
                 imgPath: imgPath,
                 price: req.body.price,
-                ownerId: req.body.ownerId
+                ownerId: req.body.owner
             })
             const nonReqPost = new NonReqPost({
                 _id:reqPost._id,
@@ -241,16 +248,10 @@ exports.updatePost = async(req, res) => {
                     nonReqFields: nonReqPost
                 }
             })
-            .then(res=> {
-                if(res.ok == '1'){
+            .then(resp=> {
                     res.status(200).json({
                         message: "post updated!"
                     })
-                }else{
-                    res.status(401).json({
-                        message: "Server erro!"
-                    })
-                }
             })
     })
 }
