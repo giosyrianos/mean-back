@@ -165,7 +165,7 @@ exports.updateUser = async(req, res, next) => {
         const url = req.protocol + "://" + req.get("host")
         imagePath = url + "/images/" + req.file.filename
     }else{
-        imagePath = userr.imgPath
+        imagePath = req.body.image
     }
     let id = mongoose.Types.ObjectId(req.params.id)
     bcrypt.hash(userr.password, 10)
@@ -378,6 +378,9 @@ exports.commentDeveloper= async(req, res) => {
             message: "rating must be 1-5"
         })
     }
+
+
+
 
     var username = await(User.findById(clientId).username)
     var comment = {
