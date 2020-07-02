@@ -155,22 +155,26 @@ exports.getPostByClintIdAndPostId = async(req, res) =>{
 exports.postBid = async(req, res) => {
     var devId = mongoose.Types.ObjectId(req.body.devId)
     var projId = mongoose.Types.ObjectId(req.body.postId)
+    var username = await (User.findById(devId).then(user => { return user.username}))
     const bid = new Bid({
         devId: devId,
-        projId: projId,
-        price: req.body.price
+        price: req.body.price,
+        username: username
     })
-    console.log(bid)
     Post.findById(projId)
         .then(project => {
             project.updateOne(
-                {$push : {
+                {
+                    $push: {
                     bids: bid
                 }}
             )
-            res.status(200).json({
-                message: "bid added"
-            })
+            .then(resp =>
+                {
+                    res.status(200).json({
+                        message: "bid added"
+                    })
+                })
         })
         .catch(error => {
             res.status(500).json({

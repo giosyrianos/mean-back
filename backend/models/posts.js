@@ -45,7 +45,7 @@ const PostSchema = mongoose.Schema({
 	// Task list
 	tasks:[taskSchema],
 	// Dev ID
-	devId: mongoose.Types.ObjectId
+	devId: {type: mongoose.Types.ObjectId, default: null}
 })
 
 const Post = mongoose.model('Post', PostSchema);
