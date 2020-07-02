@@ -188,13 +188,12 @@ exports.updateUser = async(req, res, next) => {
         imagePath = req.body.image
     }
     let id = mongoose.Types.ObjectId(req.params.id)
-    bcrypt.hash(userr.password, 10)
-    .then(hash => {
+    // bcrypt.hash(userr.password, 10)
+    // .then(hash => {
         const basicuser = new User({
             email : userr.email,
             username : userr.username,
             userType : userr.userType,
-            password : hash,
         });
         const subuser = new SubUser({
             name: userr.name,
@@ -211,7 +210,6 @@ exports.updateUser = async(req, res, next) => {
                         email: basicuser.email,
                         username: basicuser.username,
                         userType: basicuser.userType,
-                        password: hash
                     }
                 }
             )
@@ -242,13 +240,20 @@ exports.updateUser = async(req, res, next) => {
                     })
                 }
                 if ( user.userType == 'Developer'){
+                    var skillTags = []
+                    if (userr.skills){
+                        for(i in userr.skills){
+                            skillTags.push(userr.skills[i])
+                        }
+                    }
                     Developer.findById(user._id)
                     .then(dev => {
                         dev.updateOne(
                             {
                                 $set:{
                                     userFields: basicuser,
-                                    subUserFields: subuser
+                                    subUserFields: subuser,
+                                    skillTags: skillTags
                                 }
                             }
                         )
@@ -268,7 +273,8 @@ exports.updateUser = async(req, res, next) => {
             }
             )
         })
-})}
+// })
+}
 
 exports.deleteUser = (req, res, next) => {
 console.log(req.body)
