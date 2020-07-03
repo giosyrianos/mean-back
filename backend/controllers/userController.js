@@ -276,11 +276,11 @@ exports.updateUser = async(req, res, next) => {
 // })
 }
 
-exports.deleteUser = (req, res, next) => {
-console.log(req)
+exports.deleteUser = async(req, res, next) => {
+   console.log(req.params)
    let userId = mongoose.Types.ObjectId(req.params.id)
    User.findByIdAndDelete(userId).then(user => {
-       userType = user.userType
+       let userType = user.userType
        if (userType == 'Client'){
            Client.findByIdAndDelete(userId).then(user => {
                res.json({
