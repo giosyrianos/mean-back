@@ -454,8 +454,12 @@ exports.commentDeveloper= async(req, res) => {
 exports.getDevComments = async(req, res) => {
     let id = mongoose.Types.ObjectId(req.params.id)
     Developer.findById(id).then(dev=> {
-        res.json({
-            comments: dev.comments
-        })
+        if(dev.comments.length > 0){
+            res.json({
+                comments: dev.comments
+            })
+        }else{
+            return
+        }
     })
 }
