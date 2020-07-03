@@ -277,7 +277,7 @@ exports.updateUser = async(req, res, next) => {
 }
 
 exports.deleteUser = (req, res, next) => {
-console.log(req.body)
+console.log(req)
    let userId = mongoose.Types.ObjectId(req.params.id)
    User.findByIdAndDelete(userId).then(user => {
        userType = user.userType
@@ -453,13 +453,19 @@ exports.commentDeveloper= async(req, res) => {
 
 exports.getDevComments = async(req, res) => {
     let id = mongoose.Types.ObjectId(req.params.id)
-    Developer.findById(id).then(dev=> {
-        if(dev.comments.length > 0){
-            res.json({
-                comments: dev.comments
-            })
-        }else{
-            return
-        }
+    Developer.findById(id).then(dev=> 
+        {
+            if(dev){
+
+                if(dev.comments.length > 0){
+                    res.json({
+                        comments: dev.comments
+                    })
+                }else{
+                    return
+                }
+            }else{
+                return
+            }
     })
 }

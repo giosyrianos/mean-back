@@ -18,9 +18,8 @@ router
 	.route('/:id')
 	.get(userController.getUser)
 	.put(extractFile, userController.updateUser)
-
 router
-	.route('/deleteUser/:id')
+	.route('/user/deleteUser/:id')
 	.delete(userController.deleteUser)
 router
 	.route('/')
