@@ -60,13 +60,18 @@ exports.postPost = async(req, res) => {
         imgPath: imgPath,
         ownerId: req.body.ownerId
     })
+    if(req.body.skillTags){
+        tags = req.body.skillTags.split(',')
+    }else{
+        tags= []
+    }
     const nonReqPost = new NonReqPost({
         _id:reqPost._id,
         maxPrice: req.body.maxPrice,
         duration: req.body.duration,
         durationType: req.body.duration,
         bodDuration: req.body.bodDuration,
-        recomendedTags: req.body.recomendedTags,
+        recomendedTags: tags,
     })
     const post = new Post({
         _id:reqPost._id,
@@ -116,6 +121,7 @@ exports.getPostById = async(req, res) => {
     Post.findById(id)
     .then(post => {
         if(post){
+            console.log(post)
             res.json(post)
         }else{
             res.json("Post not found")
@@ -233,12 +239,12 @@ exports.completeTask = async(req, res) => {
 }
 
 exports.updatePost = async(req, res) => {
-
+    console.log(req.body)
     if (req.file) {
         const url = req.protocol + "://" + req.get("host")
         imgPath = url + "/images/" + req.file.filename
     }else{
-        imagePath = req.body.imgPath
+        imgPath = req.body.imgPath
     }
 
     id = mongoose.Types.ObjectId(req.params.id)
@@ -257,15 +263,22 @@ exports.updatePost = async(req, res) => {
                 price: req.body.price,
                 ownerId: req.body.owner
             })
+            if(req.body.skillTags){
+                tags = []
+               for(i in req.body.skillTags){
+                tags.push(req.body.skillTags[i])
+               }
+            }else{
+                tags= []
+            }
             const nonReqPost = new NonReqPost({
                 _id:reqPost._id,
                 maxPrice: req.body.maxPrice,
                 duration: req.body.duration,
                 durationType: req.body.duration,
                 bodDuration: req.body.bodDuration,
-                recomendedTags: req.body.recomendedTags,
+                recomendedTags: tags,
             })
-            console.log(reqPost)
             post.updateOne({
                 $set:{
                     basicFields:reqPost,
